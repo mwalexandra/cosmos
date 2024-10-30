@@ -9,7 +9,7 @@ namespace Benutzerverwaltung
     {
 
         string versionString = "Version 0.1";
-        DateTime momentofSTart;
+        DateTime momentofSTart; 
 
         protected override void BeforeRun()
         {
