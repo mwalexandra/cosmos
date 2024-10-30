@@ -1,0 +1,36 @@
+static void RenameUser()
+ {
+     Console.Write("Gebe den Benutzernamen ein, den du ändern möchtest: ");
+     string currentUsername = Console.ReadLine();
+     User userToRename = users.Find(user => user.Username.Equals(currentUsername, StringComparison.OrdinalIgnoreCase));
+
+     if (userToRename == null)
+     {
+         Console.WriteLine("Benutzer nicht gefunden.");
+         return;
+     }
+
+     Console.Write("Gebe den neuen Benutzernamen ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
+     string newUsername = Console.ReadLine();
+
+     if (!IsValidInput(newUsername))
+     {
+         Console.WriteLine("Ungültiger neuer Benutzername.");
+         return;
+     }
+
+     userToRename.Username = newUsername;
+     Console.WriteLine($"Benutzername wurde zu '{newUsername}' geändert.");
+ }
+
+ static void ChangePassword()
+ {
+     Console.Write("Gebe den Benutzernamen ein, dessen Passwort du ändern möchtest: ");
+     string username = Console.ReadLine();
+     User userToChangePassword = users.Find(user => user.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+
+     if (userToChangePassword == null)
+     {
+         Console.WriteLine("Benutzer nicht gefunden.");
+         return;
+     }
