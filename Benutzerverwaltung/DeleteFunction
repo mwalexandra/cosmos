@@ -1,0 +1,25 @@
+static void DeleteUser()
+{
+    Console.Write("Gebe den Benutzernamen ein, den du löschen möchtest: ");
+    string usernameToDelete = Console.ReadLine();
+    User userToDelete = users.Find(user => user.Username.Equals(usernameToDelete, StringComparison.OrdinalIgnoreCase));
+
+    if (userToDelete == null)
+    {
+        Console.WriteLine("Benutzer nicht gefunden.");
+        return;
+    }
+
+    Console.Write($"Bist du sicher, dass du den Benutzer '{usernameToDelete}' löschen möchtest? (y/n): ");
+    string confirmation = Console.ReadLine();
+
+    if (confirmation.Equals("y", StringComparison.OrdinalIgnoreCase))
+    {
+        users.Remove(userToDelete);
+        Console.WriteLine($"Benutzer '{usernameToDelete}' wurde gelöscht.");
+    }
+    else
+    {
+        Console.WriteLine("Löschvorgang abgebrochen.");
+    }
+}
