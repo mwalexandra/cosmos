@@ -1,9 +1,10 @@
+using Benutzerverwaltung;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Sys = Cosmos.System;
 
-namespace Comotest
+namespace Benutzerverwaltung
 {
     public class Kernel : Sys.Kernel
     {
@@ -12,12 +13,16 @@ namespace Comotest
 
         protected override void BeforeRun()
         {
+            // TODO Memory
+            users.Add(new User("admin", "admin"));
+
             Console.WriteLine("Cosmos booted successfully.");
-            Console.WriteLine("Type 'createuser' to create a user and password.");
+            Console.WriteLine("******************************************");
+            Console.WriteLine("Type 'create' to create a user and password.");
             Console.WriteLine("Type 'userlist' to display all users.");
-            Console.WriteLine("Type 'deleteuser' to delete a user.");
-            Console.WriteLine("Type 'reuser' to rename a user.");
-            Console.WriteLine("Type 'repassword' to change a password.");
+            Console.WriteLine("Type 'delete' to delete a user.");
+            Console.WriteLine("Type 'rename' to rename a user.");
+            Console.WriteLine("Type 'repass' to change a password.");
             Console.WriteLine("Type 'helpcreateuser' to get help.");
             Console.WriteLine("Type 'helpdeleteuser' to get help.");
             Console.WriteLine("Type 'exit' to stop the program.");
@@ -25,6 +30,7 @@ namespace Comotest
 
         protected override void Run()
         {
+            Helpers helpers = new Helpers();
             // Wartet auf Benutzereingabe
             while (true)
             {
@@ -53,11 +59,11 @@ namespace Comotest
                 }
                 else if (command.Equals("helpcreateuser", StringComparison.OrdinalIgnoreCase))
                 {
-                    HelpCreateUser();
+                    helpers.HelpCreateUser();
                 }
                 else if (command.Equals("helpdeleteuser", StringComparison.OrdinalIgnoreCase))
                 {
-                    HelpDeleteUser();
+                    helpers.HelpDeleteUser();
                 }
                 else if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
@@ -72,31 +78,33 @@ namespace Comotest
 
         static void CreateUsernameAndPassword()
         {
+            Helpers helper = new Helpers();
+
             Console.WriteLine("User- und Passworterstellung");
 
             string username = "";
-            while (!IsValidInput(username))
+            while (!helper.IsValidInput(username))
             {
                 Console.Write("Bitte gebe einen Benutzernamen ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
                 username = Console.ReadLine();
-                if (!IsValidInput(username))
+                if (!helper.IsValidInput(username))
                 {
-                    Console.WriteLine("Ung√ºltiger Benutzername. Versuche es nochmal.");
+                    Console.WriteLine("Ung¸ltiger Benutzername. Versuche es nochmal.");
                 }
             }
 
             string password = "";
-            while (!IsValidInput(password))
+            while (!helper.IsValidInput(password))
             {
                 Console.Write("Bitte gebe ein Passwort ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
                 password = Console.ReadLine();
-                if (!IsValidInput(password))
+                if (!helper.IsValidInput(password))
                 {
-                    Console.WriteLine("Ung√ºltiges Passwort. Versuche es nochmal.");
+                    Console.WriteLine("Ung¸ltiges Passwort. Versuche es nochmal.");
                 }
             }
 
-            // Benutzer zur Liste hinzuf√ºgen
+            // Benutzer zur Liste hinzuf¸gen
             users.Add(new User(username, password));
 
             Console.WriteLine("Benutzername und Passwort erfolgreich erstellt!");
@@ -114,18 +122,18 @@ namespace Comotest
             }
             else
             {
-                foreach (var user in users)
+                foreach (var User in users)
                 {
-                    Console.WriteLine($"Benutzername: {user.Username}");
+                    Console.WriteLine($"Benutzername: {User.GetUsername()}");
                 }
             }
         }
 
         static void DeleteUser()
         {
-            Console.Write("Gebe den Benutzernamen ein, den du l√∂schen m√∂chtest: ");
+            Console.Write("Gebe den Benutzernamen ein, den du lˆschen mˆchtest: ");
             string usernameToDelete = Console.ReadLine();
-            User userToDelete = users.Find(user => user.Username.Equals(usernameToDelete, StringComparison.OrdinalIgnoreCase));
+            User userToDelete = users.Find(user => user.GetUsername().Equals(usernameToDelete, StringComparison.OrdinalIgnoreCase));
 
             if (userToDelete == null)
             {
@@ -133,25 +141,27 @@ namespace Comotest
                 return;
             }
 
-            Console.Write($"Bist du sicher, dass du den Benutzer '{usernameToDelete}' l√∂schen m√∂chtest? (y/n): ");
+            Console.Write($"Bist du sicher, dass du den Benutzer '{usernameToDelete}' lˆschen mˆchtest? (y/n): ");
             string confirmation = Console.ReadLine();
 
             if (confirmation.Equals("y", StringComparison.OrdinalIgnoreCase))
             {
                 users.Remove(userToDelete);
-                Console.WriteLine($"Benutzer '{usernameToDelete}' wurde gel√∂scht.");
+                Console.WriteLine($"Benutzer '{usernameToDelete}' wurde gelˆscht.");
             }
             else
             {
-                Console.WriteLine("L√∂schvorgang abgebrochen.");
+                Console.WriteLine("Lˆschvorgang abgebrochen.");
             }
         }
 
         static void RenameUser()
         {
-            Console.Write("Gebe den Benutzernamen ein, den du √§ndern m√∂chtest: ");
+            Helpers helpers = new Helpers();
+
+            Console.Write("Gebe den Benutzernamen ein, den du ‰ndern mˆchtest: ");
             string currentUsername = Console.ReadLine();
-            User userToRename = users.Find(user => user.Username.Equals(currentUsername, StringComparison.OrdinalIgnoreCase));
+            User userToRename = users.Find(user => user.GetUsername().Equals(currentUsername, StringComparison.OrdinalIgnoreCase));
 
             if (userToRename == null)
             {
@@ -162,21 +172,23 @@ namespace Comotest
             Console.Write("Gebe den neuen Benutzernamen ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
             string newUsername = Console.ReadLine();
 
-            if (!IsValidInput(newUsername))
+            if (!helpers.IsValidInput(newUsername))
             {
-                Console.WriteLine("Ung√ºltiger neuer Benutzername.");
+                Console.WriteLine("Ung¸ltiger neuer Benutzername.");
                 return;
             }
 
-            userToRename.Username = newUsername;
-            Console.WriteLine($"Benutzername wurde zu '{newUsername}' ge√§ndert.");
+            userToRename.SetUsername(newUsername);
+            Console.WriteLine($"Benutzername wurde zu '{newUsername}' ge‰ndert.");
         }
 
         static void ChangePassword()
         {
-            Console.Write("Gebe den Benutzernamen ein, dessen Passwort du √§ndern m√∂chtest: ");
+            Helpers helpers = new Helpers();
+
+            Console.Write("Gebe den Benutzernamen ein, dessen Passwort du ‰ndern mˆchtest: ");
             string username = Console.ReadLine();
-            User userToChangePassword = users.Find(user => user.Username.Equals(username, StringComparison.OrdinalIgnoreCase));
+            User userToChangePassword = users.Find(user => user.GetUsername().Equals(username, StringComparison.OrdinalIgnoreCase));
 
             if (userToChangePassword == null)
             {
@@ -187,59 +199,14 @@ namespace Comotest
             Console.Write("Gebe das neue Passwort ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
             string newPassword = Console.ReadLine();
 
-            if (!IsValidInput(newPassword))
+            if (!helpers.IsValidInput(newPassword))
             {
-                Console.WriteLine("Ung√ºltiges neues Passwort.");
+                Console.WriteLine("Ung¸ltiges neues Passwort.");
                 return;
             }
 
-            userToChangePassword.Password = newPassword;
-            Console.WriteLine("Passwort erfolgreich ge√§ndert.");
-        }
-
-        static bool IsValidInput(string input)
-        {
-            if ((input.Length < 4) || (input.Length > 16))
-            {
-                return false;
-            }
-            return IsAlpha(input);
-        }
-
-        static bool IsAlpha(string input)
-        {
-            foreach (char c in input)
-            {
-                if (!char.IsLetter(c))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        // User-Klasse zur Speicherung der Benutzerinformationen
-        public class User
-        {
-            public string Username { get; set; }
-            public string Password { get; set; }
-
-            public User(string username, string password)
-            {
-                Username = username;
-                Password = password;
-            }
-        }
-
-        static void HelpCreateUser()
-        {
-            Console.WriteLine("Geben Sie ein Username an (4-16 Zeichen, nur lateinische Buchstaben).");
-            Console.WriteLine("Geben Sie ein Passwort an (4-16 Zeichen, nur lateinische Buchstaben).");
-        }
-
-        static void HelpDeleteUser()
-        {
-            Console.WriteLine("Gerben Sie den zu L√∂schenden User ein und best√§tigen Sie die eingabe");
+            userToChangePassword.SetPassword(newPassword);
+            Console.WriteLine("Passwort erfolgreich ge‰ndert.");
         }
 
         static void Exit()
