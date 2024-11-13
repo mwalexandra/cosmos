@@ -1,6 +1,7 @@
 using Benutzerverwaltung;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 using Sys = Cosmos.System;
 
@@ -14,15 +15,16 @@ namespace Benutzerverwaltung
         protected override void BeforeRun()
         {
             // TODO Memory
-            users.Add(new User("admin", "admin"));
+            users.Add(new User("root", "root", "ROOT"));
 
             Console.WriteLine("Cosmos booted successfully.");
             Console.WriteLine("******************************************");
-            Console.WriteLine("Type 'create' to create a user and password.");
+            Console.WriteLine("Type 'createuser' to create a user and password.");
             Console.WriteLine("Type 'userlist' to display all users.");
             Console.WriteLine("Type 'delete' to delete a user.");
             Console.WriteLine("Type 'rename' to rename a user.");
             Console.WriteLine("Type 'repass' to change a password.");
+            Console.WriteLine("Type 'changerole' to change a role of any user.");
             Console.WriteLine("Type 'helpcreateuser' to get help.");
             Console.WriteLine("Type 'helpdeleteuser' to get help.");
             Console.WriteLine("Type 'exit' to stop the program.");
@@ -56,6 +58,10 @@ namespace Benutzerverwaltung
                 else if (command.Equals("repassword", StringComparison.OrdinalIgnoreCase))
                 {
                     ChangePassword();
+                }
+                else if (command.Equals("changerole", StringComparison.OrdinalIgnoreCase))
+                {
+                    ChangeRole();
                 }
                 else if (command.Equals("helpcreateuser", StringComparison.OrdinalIgnoreCase))
                 {
@@ -105,7 +111,7 @@ namespace Benutzerverwaltung
             }
 
             // Benutzer zur Liste hinzufügen
-            users.Add(new User(username, password));
+            users.Add(new User(username, password, "USER")); // default role - User
 
             Console.WriteLine("Benutzername und Passwort erfolgreich erstellt!");
             Console.WriteLine($"Benutzername: {username}");
@@ -114,6 +120,7 @@ namespace Benutzerverwaltung
 
         static void DisplayUserList()
         {
+            Helpers helper = new Helpers();
             Console.WriteLine("Benutzerliste:");
 
             if (users.Count == 0)
@@ -124,7 +131,8 @@ namespace Benutzerverwaltung
             {
                 foreach (var User in users)
                 {
-                    Console.WriteLine($"Benutzername: {User.GetUsername()}");
+                    Console.WriteLine($"Benutzername: {User.GetUsername()}, {User.GetRole()}");
+                    Console.WriteLine("__________________");
                 }
             }
         }
@@ -207,6 +215,28 @@ namespace Benutzerverwaltung
 
             userToChangePassword.SetPassword(newPassword);
             Console.WriteLine("Passwort erfolgreich geändert.");
+        }
+
+        static void ChangeRole()
+        {
+            Helpers helpers = new Helpers();
+
+            Console.WriteLine("Gebe den Benutzername ein, dessen Rolle du ändern möchtest: ");
+            string username = Console.ReadLine();
+            User userToChangeRole = users.Find(user => user.GetUsername().Equals(username, StringComparison.OrdinalIgnoreCase));
+
+            if (userToChangeRole == null)
+            {
+                Console.WriteLine("Benutzer nicht gefunden.");
+                return;
+            }
+
+            Console.Write("Gebe das neue Rolle ein (fadmin, fuser, user): ");
+            string newRole = Console.ReadLine();
+
+            userToChangeRole.SetRole(newRole.ToUpper());
+            
+            Console.WriteLine("Rolle erfolgreich geändert.");
         }
 
         static void Exit()

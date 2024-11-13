@@ -41,5 +41,11 @@ namespace Benutzerverwaltung
             Console.WriteLine("Gerben Sie den zu Löschenden User ein und bestätigen Sie die eingabe");
         }
 
+
+        public string EnumToString(Enum enumToString)
+        {
+            return enumToString.ToString();
+        }
+
     }
 }
