@@ -12,10 +12,10 @@ namespace Benutzerverwaltung
     {
         private string Username { get; set; }
         private string Password { get; set; }
-        private int Role { get; set; }   // 0 - Root user, 1 - Fachadmin, 2 - Fachanwender, 3 - Anwender
+        private int Role { get; set; }   // 0 - Root user, 1 - Fachadmin, 2 - Fachanwender, 3 - Anwender (default)
 
 
-        public User(string username, string password, string initialRole)
+        public User(string username, string password, int initialRole)
         {
             Username = username;
             Password = password;

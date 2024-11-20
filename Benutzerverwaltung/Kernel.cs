@@ -15,7 +15,7 @@ namespace Benutzerverwaltung
         protected override void BeforeRun()
         {
             // TODO Memory
-            users.Add(new User("root", "root", "ROOT"));
+            users.Add(new User("root", "root", 0));
 
             Console.WriteLine("Cosmos booted successfully.");
             Console.WriteLine("******************************************");
@@ -111,7 +111,7 @@ namespace Benutzerverwaltung
             }
 
             // Benutzer zur Liste hinzufügen
-            users.Add(new User(username, password, "USER")); // default role - User
+            users.Add(new User(username, password, 3)); // default role - User
 
             Console.WriteLine("Benutzername und Passwort erfolgreich erstellt!");
             Console.WriteLine($"Benutzername: {username}");
@@ -231,12 +231,22 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            Console.Write("Gebe das neue Rolle ein (fadmin, fuser, user): ");
-            string newRole = Console.ReadLine();
+            Console.Write("Gebe die Nummer der neuen Rolle ein (fadmin - 1, fuser - 2, user - 3): ");
+            string role = Console.ReadLine();
+            int.TryParse(role, out int roleNum);
 
-            userToChangeRole.SetRole(newRole.ToUpper());
-            
-            Console.WriteLine("Rolle erfolgreich geändert.");
+            Console.WriteLine(roleNum);
+
+            if (roleNum == 1 || roleNum == 2 || roleNum == 3)
+            {
+                userToChangeRole.SetRole(roleNum);
+                Console.WriteLine("Rolle erfolgreich geändert.");
+            }
+            else
+            {
+                Console.WriteLine("falsche Eingabe");
+                Console.WriteLine("Ende des Rollentausches");
+            }
         }
 
         static void Exit()
