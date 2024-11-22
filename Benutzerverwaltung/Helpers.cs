@@ -47,5 +47,10 @@ namespace Benutzerverwaltung
             return enumToString.ToString();
         }
 
+        public int ProofRole(string username)
+        {
+            // search the user with user name and return a role number
+        }
+
     }
 }
