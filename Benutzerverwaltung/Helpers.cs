@@ -47,35 +47,53 @@ namespace Benutzerverwaltung
             return enumToString.ToString();
         }
 
-        public bool isAllowed (User user, User userToChange)
+        public bool isAllowed (User userToChange, List<User> users, string action)
         {
-            int userRole = user.GetRole();
-            int userToChangeRole = userToChange.GetRole();
+            Console.Write("Input your username");
+            string userName = Console.ReadLine();
+            User user = users.Find(userItem => userItem.GetUsername().Equals(userName, StringComparison.OrdinalIgnoreCase));
 
-            if ( userToChangeRole == 3)
-                return true;
-            else if ( userToChangeRole == 2)
+            if (user != null)
             {
-                switch (userRole)
+                int userRole = user.GetRole();
+                int userToChangeRole = userToChange.GetRole();
+
+                if (userToChangeRole == 3)
                 {
-                    case 0:
-                    case 1: 
-                        return true;
-                    default:
-                        return false;
+                    // TODO
+                    /* switch (action)
+                    {
+                        case ''
+                    } */
                 }
-            } else if ( userToChangeRole == 1 )
-            {
-                switch (userRole)
+                else if (userToChangeRole == 2)
                 {
-                    case 0:
-                        return true;
-                    default:
-                        return false;
+                    switch (userRole)
+                    {
+                        case 0:
+                        case 1:
+                            return true;
+                        default:
+                            return false;
+                    }
                 }
-            } else if ( userToChangeRole == 0 )
+                else if (userToChangeRole == 1)
+                {
+                    switch (userRole)
+                    {
+                        case 0:
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+                else if (userToChangeRole == 0)
+                {
+                    return userRole == 0 ? true : false;
+                }
+            } else
             {
-                return userRole == 0 ? true : false;
+                Console.Write("User was not found");
             }
             return false;
         }

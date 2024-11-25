@@ -11,6 +11,7 @@ namespace Benutzerverwaltung
     {
         // Liste zum Speichern der Benutzer
         private static List<User> users = new List<User>();
+        static Helpers helpers = new Helpers();
 
         protected override void BeforeRun()
         {
@@ -32,7 +33,6 @@ namespace Benutzerverwaltung
 
         protected override void Run()
         {
-            Helpers helpers = new Helpers();
             // Wartet auf Benutzereingabe
             while (true)
             {
@@ -84,27 +84,25 @@ namespace Benutzerverwaltung
 
         static void CreateUsernameAndPassword()
         {
-            Helpers helper = new Helpers();
-
             Console.WriteLine("User- und Passworterstellung");
 
             string username = "";
-            while (!helper.IsValidInput(username))
+            while (!helpers.IsValidInput(username))
             {
                 Console.Write("Bitte gebe einen Benutzernamen ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
                 username = Console.ReadLine();
-                if (!helper.IsValidInput(username))
+                if (!helpers.IsValidInput(username))
                 {
                     Console.WriteLine("Ungültiger Benutzername. Versuche es nochmal.");
                 }
             }
 
             string password = "";
-            while (!helper.IsValidInput(password))
+            while (!helpers.IsValidInput(password))
             {
                 Console.Write("Bitte gebe ein Passwort ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
                 password = Console.ReadLine();
-                if (!helper.IsValidInput(password))
+                if (!helpers.IsValidInput(password))
                 {
                     Console.WriteLine("Ungültiges Passwort. Versuche es nochmal.");
                 }
@@ -120,7 +118,6 @@ namespace Benutzerverwaltung
 
         static void DisplayUserList()
         {
-            Helpers helper = new Helpers();
             Console.WriteLine("Benutzerliste:");
 
             if (users.Count == 0)
@@ -149,24 +146,27 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            Console.Write($"Bist du sicher, dass du den Benutzer '{usernameToDelete}' löschen möchtest? (y/n): ");
-            string confirmation = Console.ReadLine();
-
-            if (confirmation.Equals("y", StringComparison.OrdinalIgnoreCase))
+            if (helpers.isAllowed(userToDelete, users))
             {
-                users.Remove(userToDelete);
-                Console.WriteLine($"Benutzer '{usernameToDelete}' wurde gelöscht.");
+                Console.Write($"Bist du sicher, dass du den Benutzer '{usernameToDelete}' löschen möchtest? (y/n): ");
+                string confirmation = Console.ReadLine();
+
+                if (confirmation.Equals("y", StringComparison.OrdinalIgnoreCase))
+                {
+                    users.Remove(userToDelete);
+                    Console.WriteLine($"Benutzer '{usernameToDelete}' wurde gelöscht.");
+                }
+                else
+                {
+                    Console.WriteLine("Löschvorgang abgebrochen.");
+                }
             }
             else
-            {
-                Console.WriteLine("Löschvorgang abgebrochen.");
-            }
+                Console.Write("You have no permissions");
         }
 
         static void RenameUser()
         {
-            Helpers helpers = new Helpers();
-
             Console.Write("Gebe den Benutzernamen ein, den du ändern möchtest: ");
             string currentUsername = Console.ReadLine();
             User userToRename = users.Find(user => user.GetUsername().Equals(currentUsername, StringComparison.OrdinalIgnoreCase));
@@ -176,24 +176,26 @@ namespace Benutzerverwaltung
                 Console.WriteLine("Benutzer nicht gefunden.");
                 return;
             }
-
-            Console.Write("Gebe den neuen Benutzernamen ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
-            string newUsername = Console.ReadLine();
-
-            if (!helpers.IsValidInput(newUsername))
+            if (helpers.isAllowed(userToRename, users))
             {
-                Console.WriteLine("Ungültiger neuer Benutzername.");
-                return;
-            }
+                Console.Write("Gebe den neuen Benutzernamen ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
+                string newUsername = Console.ReadLine();
 
-            userToRename.SetUsername(newUsername);
-            Console.WriteLine($"Benutzername wurde zu '{newUsername}' geändert.");
+                if (!helpers.IsValidInput(newUsername))
+                {
+                    Console.WriteLine("Ungültiger neuer Benutzername.");
+                    return;
+                }
+
+                userToRename.SetUsername(newUsername);
+                Console.WriteLine($"Benutzername wurde zu '{newUsername}' geändert.");
+            }
+            else
+                Console.Write("You have no permissions");
         }
 
         static void ChangePassword()
         {
-            Helpers helpers = new Helpers();
-
             Console.Write("Gebe den Benutzernamen ein, dessen Passwort du ändern möchtest: ");
             string username = Console.ReadLine();
             User userToChangePassword = users.Find(user => user.GetUsername().Equals(username, StringComparison.OrdinalIgnoreCase));
@@ -204,23 +206,26 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            Console.Write("Gebe das neue Passwort ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
-            string newPassword = Console.ReadLine();
-
-            if (!helpers.IsValidInput(newPassword))
+            if (helpers.isAllowed(userToChangePassword, users))
             {
-                Console.WriteLine("Ungültiges neues Passwort.");
-                return;
-            }
+                Console.Write("Gebe das neue Passwort ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
+                string newPassword = Console.ReadLine();
 
-            userToChangePassword.SetPassword(newPassword);
-            Console.WriteLine("Passwort erfolgreich geändert.");
+                if (!helpers.IsValidInput(newPassword))
+                {
+                    Console.WriteLine("Ungültiges neues Passwort.");
+                    return;
+                }
+
+                userToChangePassword.SetPassword(newPassword);
+                Console.WriteLine("Passwort erfolgreich geändert.");
+            }
+            else
+                Console.Write("You have no permissions");
         }
 
         static void ChangeRole()
         {
-            Helpers helpers = new Helpers();
-
             Console.WriteLine("Gebe den Benutzername ein, dessen Rolle du ändern möchtest: ");
             string username = Console.ReadLine();
             User userToChangeRole = users.Find(user => user.GetUsername().Equals(username, StringComparison.OrdinalIgnoreCase));
@@ -231,22 +236,27 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            Console.Write("Gebe die Nummer der neuen Rolle ein (fadmin - 1, fuser - 2, user - 3): ");
-            string role = Console.ReadLine();
-            int.TryParse(role, out int roleNum);
-
-            Console.WriteLine(roleNum);
-
-            if (roleNum == 1 || roleNum == 2 || roleNum == 3)
+            if (helpers.isAllowed(userToChangeRole, users))
             {
-                userToChangeRole.SetRole(roleNum);
-                Console.WriteLine("Rolle erfolgreich geändert.");
+                Console.Write("Gebe die Nummer der neuen Rolle ein (fadmin - 1, fuser - 2, user - 3): ");
+                string role = Console.ReadLine();
+                int.TryParse(role, out int roleNum);
+
+                Console.WriteLine(roleNum);
+
+                if (roleNum == 1 || roleNum == 2 || roleNum == 3)
+                {
+                    userToChangeRole.SetRole(roleNum);
+                    Console.WriteLine("Rolle erfolgreich geändert.");
+                }
+                else
+                {
+                    Console.WriteLine("falsche Eingabe");
+                    Console.WriteLine("Ende des Rollentausches");
+                }
             }
             else
-            {
-                Console.WriteLine("falsche Eingabe");
-                Console.WriteLine("Ende des Rollentausches");
-            }
+                Console.Write("You have no permissions");
         }
 
         static void Exit()
