@@ -47,9 +47,37 @@ namespace Benutzerverwaltung
             return enumToString.ToString();
         }
 
-        public int ProofRole(string username)
+        public bool isAllowed (User user, User userToChange)
         {
-            // search the user with user name and return a role number
+            int userRole = user.GetRole();
+            int userToChangeRole = userToChange.GetRole();
+
+            if ( userToChangeRole == 3)
+                return true;
+            else if ( userToChangeRole == 2)
+            {
+                switch (userRole)
+                {
+                    case 0:
+                    case 1: 
+                        return true;
+                    default:
+                        return false;
+                }
+            } else if ( userToChangeRole == 1 )
+            {
+                switch (userRole)
+                {
+                    case 0:
+                        return true;
+                    default:
+                        return false;
+                }
+            } else if ( userToChangeRole == 0 )
+            {
+                return userRole == 0 ? true : false;
+            }
+            return false;
         }
 
     }
