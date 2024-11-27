@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,51 +50,64 @@ namespace Benutzerverwaltung
 
         public bool isAllowed (User userToChange, List<User> users, string action)
         {
-            Console.Write("Input your username");
-            string userName = Console.ReadLine();
-            User user = users.Find(userItem => userItem.GetUsername().Equals(userName, StringComparison.OrdinalIgnoreCase));
+            Console.Write("Input your password to check permissions: ");
+            string password = Console.ReadLine();
+            User user = users.Find(userItem => userItem.GetPassword().Equals(password, StringComparison.OrdinalIgnoreCase));
 
             if (user != null)
             {
                 int userRole = user.GetRole();
+                Console.Write(userRole);
                 int userToChangeRole = userToChange.GetRole();
-
-                if (userToChangeRole == 3)
+                Console.Write(userToChangeRole);
                 {
-                    // TODO
-                    /* switch (action)
+                    switch (action)
                     {
-                        case ''
-                    } */
-                }
-                else if (userToChangeRole == 2)
-                {
-                    switch (userRole)
-                    {
-                        case 0:
-                        case 1:
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-                else if (userToChangeRole == 1)
-                {
-                    switch (userRole)
-                    {
-                        case 0:
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-                else if (userToChangeRole == 0)
-                {
-                    return userRole == 0 ? true : false;
+                        case "createuser":
+                        case "deleteuser": 
+                            return CheckRights(userRole, userToChangeRole);
+                        case "changerole":
+                            return userRole == 0 && userToChangeRole != 0 ? true : false; // roles can be changed by root only for all user exept himself
+                        case "reuser":
+                        case "repassword":
+                            return userRole == userToChangeRole ? true : false;  // name and password can be changed by user himself only
+                        default: return false;
+                    } 
                 }
             } else
             {
-                Console.Write("User was not found");
+                Console.Write("Username is not correct");
+            }
+            return false;
+        }
+
+        static bool CheckRights(int userRole, int userToChangeRole)
+        {
+            if (userRole == 3) return false;
+            else if (userRole == 2)
+            {
+                return userToChangeRole == 3 ? true : false;
+            }
+            else if (userRole == 1)
+            {
+                switch (userToChangeRole)
+                {
+                    case 2:
+                    case 3:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+            else if (userRole == 0)
+            {
+                switch (userToChangeRole)
+                {
+                    case 0:
+                        return false;
+                    default:
+                        return true;
+                }
             }
             return false;
         }
