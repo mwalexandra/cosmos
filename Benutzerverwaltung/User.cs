@@ -51,5 +51,22 @@ namespace Benutzerverwaltung
         {
             Role = newRole;
         }
+
+        public string RoleToString(int role) 
+        {
+            switch (role)
+            {
+                case 0:
+                    return "Root user";
+                case 1:
+                    return "Manager admin";
+                case 2:
+                    return "Manager user";
+                case 3:
+                    return "User";
+                default:
+                    return "Wrong input";
+            }
+        }
     }
 }

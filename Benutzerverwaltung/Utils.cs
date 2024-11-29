@@ -12,7 +12,7 @@ namespace Benutzerverwaltung
 
         public void CreateUsernameAndPassword(List<User> users)
         {
-            Console.WriteLine("User- und Passworterstellung");
+            Console.WriteLine("Username- und Passworterstellung");
 
             string username = "";
             while (!helpers.IsValidInput(username))
@@ -39,7 +39,7 @@ namespace Benutzerverwaltung
 
             // Benutzer zur Liste hinzufügen
             User newUser = new User(username, password, 3); // default role - User
-            if (helpers.isAllowed(newUser, users, "createuser"))
+            if (helpers.isAllowed(newUser, users, "create"))
             {
                 users.Add(newUser);
                 Console.WriteLine("Username and password were created successfully");
@@ -65,7 +65,7 @@ namespace Benutzerverwaltung
             {
                 foreach (var User in users)
                 {
-                    Console.WriteLine($"User: {User.GetUsername()}, role: {User.GetRole()}");
+                    Console.WriteLine($"User: {User.GetUsername()}, role: {User.RoleToString(User.GetRole())}");
                 }
             }
         }
@@ -82,9 +82,9 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            if (helpers.isAllowed(userToDelete, users, "deleteuser"))
+            if (helpers.isAllowed(userToDelete, users, "delete"))
             {
-                Console.Write($"Are you sure you want to delete the user '{usernameToDelete}'? (y/n): ");
+                Console.WriteLine($"Are you sure you want to delete the user '{usernameToDelete}'? (y/n): ");
                 string confirmation = Console.ReadLine();
 
                 if (confirmation.Equals("y", StringComparison.OrdinalIgnoreCase))
@@ -98,7 +98,7 @@ namespace Benutzerverwaltung
                 }
             }
             else
-                Console.Write("You have no permissions");
+                Console.WriteLine("You have no permissions");
         }
 
         public void RenameUser(List<User> users)
@@ -142,7 +142,7 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            if (helpers.isAllowed(userToChangePassword, users, "repassword"))
+            if (helpers.isAllowed(userToChangePassword, users, "repass"))
             {
                 Console.Write("Enter the new password (at least 4 characters, only Latin letters): ");
                 string newPassword = Console.ReadLine();
@@ -172,9 +172,9 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            if (helpers.isAllowed(userToChangeRole, users, "changerole"))
+            if (helpers.isAllowed(userToChangeRole, users, "rerole"))
             {
-                Console.Write("Enter the number of the new role (admin - 1, fuser - 2, user - 3): ");
+                Console.Write("Enter the number of the new role (Fachadmin - 1, Fachuser - 2, User - 3): ");
                 string role = Console.ReadLine();
                 int.TryParse(role, out int roleNum);
 

@@ -42,12 +42,6 @@ namespace Benutzerverwaltung
             Console.WriteLine("Gerben Sie den zu Löschenden User ein und bestätigen Sie die eingabe");
         }
 
-
-        public string EnumToString(Enum enumToString)
-        {
-            return enumToString.ToString();
-        }
-
         public bool isAllowed (User userToChange, List<User> users, string action)
         {
             Console.Write("Input your password to check permissions: ");
@@ -63,20 +57,20 @@ namespace Benutzerverwaltung
                 {
                     switch (action)
                     {
-                        case "createuser":
-                        case "deleteuser": 
+                        case "create":
+                        case "delete": 
                             return CheckRights(userRole, userToChangeRole);
-                        case "changerole":
+                        case "rerole":
                             return userRole == 0 && userToChangeRole != 0 ? true : false; // roles can be changed by root only for all user exept himself
                         case "reuser":
-                        case "repassword":
+                        case "repass":
                             return userRole == userToChangeRole ? true : false;  // name and password can be changed by user himself only
                         default: return false;
                     } 
                 }
             } else
             {
-                Console.Write("Username is not correct");
+                Console.WriteLine("Username is not correct");
             }
             return false;
         }
