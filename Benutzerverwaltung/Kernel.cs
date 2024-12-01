@@ -9,7 +9,7 @@ namespace Benutzerverwaltung
 {
     public class Kernel : Sys.Kernel
     {
-        // Liste zum Speichern der Benutzer
+        // List for storing users
         private static List<User> users = new List<User>();
         Utils utils = new Utils();
         Helpers helpers = new Helpers();
@@ -25,7 +25,7 @@ namespace Benutzerverwaltung
 
         protected override void Run()
         {
-            // Wartet auf Benutzereingabe
+            // Waiting for user input
             while (true)
             {
                 string command = Console.ReadLine();
@@ -81,7 +81,7 @@ namespace Benutzerverwaltung
                 }
                 else
                 {
-                    Console.WriteLine("Unbekannter Befehl. Bitte versuche es erneut.");
+                    Console.WriteLine("Unknown command. Please try again.");
                 }
             }
         }

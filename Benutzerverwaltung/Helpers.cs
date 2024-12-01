@@ -33,18 +33,18 @@ namespace Benutzerverwaltung
 
         public void HelpCreateUser()
         {
-            Console.WriteLine("Geben Sie ein Username an (4-16 Zeichen, nur lateinische Buchstaben).");
-            Console.WriteLine("Geben Sie ein Passwort an (4-16 Zeichen, nur lateinische Buchstaben).");
+            Console.WriteLine("Enter a username (4–16 characters, Latin letters only).");
+            Console.WriteLine("Enter a password (4–16 characters, Latin letters only).");
         }
 
         public void HelpDeleteUser()
         {
-            Console.WriteLine("Gerben Sie den zu Löschenden User ein und bestätigen Sie die eingabe");
+            Console.WriteLine("Enter the user to be deleted and confirm the input.");
         }
 
         public bool isAllowed (User userToChange, List<User> users, string action)
         {
-            Console.Write("Input your password to check permissions: ");
+            Console.Write("Input your password to check your permissions: ");
             string password = Console.ReadLine();
             User user = users.Find(userItem => userItem.GetPassword().Equals(password, StringComparison.OrdinalIgnoreCase));
 
@@ -70,7 +70,7 @@ namespace Benutzerverwaltung
                 }
             } else
             {
-                Console.WriteLine("Username is not correct");
+                Console.WriteLine("Input is not correct.");
             }
             return false;
         }

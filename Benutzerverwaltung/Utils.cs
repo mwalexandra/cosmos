@@ -12,27 +12,27 @@ namespace Benutzerverwaltung
 
         public void CreateUsernameAndPassword(List<User> users)
         {
-            Console.WriteLine("Username- und Passworterstellung");
+            Console.WriteLine("Username and password creation:");
 
             string username = "";
             while (!helpers.IsValidInput(username))
             {
-                Console.Write("Bitte gebe einen Benutzernamen ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
+                Console.Write("Please enter a username (at least 4 characters, Latin letters only): ");
                 username = Console.ReadLine();
                 if (!helpers.IsValidInput(username))
                 {
-                    Console.WriteLine("Ungültiger Benutzername. Versuche es nochmal.");
+                    Console.WriteLine("Invalid username. Please try again.");
                 }
             }
 
             string password = "";
             while (!helpers.IsValidInput(password))
             {
-                Console.Write("Bitte gebe ein Passwort ein (mindestens 4 Zeichen, nur lateinische Buchstaben): ");
+                Console.Write("Please enter a password (at least 4 characters, Latin letters only): ");
                 password = Console.ReadLine();
                 if (!helpers.IsValidInput(password))
                 {
-                    Console.WriteLine("Ungültiges Passwort. Versuche es nochmal.");
+                    Console.WriteLine("Invalid password. Please try again.");
                 }
             }
 
@@ -48,8 +48,8 @@ namespace Benutzerverwaltung
             }
             else
             {
-                Console.WriteLine("You have not a permissions");
-                Console.WriteLine("New user didn't create");
+                Console.WriteLine("You have not a permissions.");
+                Console.WriteLine("New user was not created.");
             }
         }
 
@@ -98,7 +98,7 @@ namespace Benutzerverwaltung
                 }
             }
             else
-                Console.WriteLine("You have no permissions");
+                Console.WriteLine("You have no permissions.");
         }
 
         public void RenameUser(List<User> users)
@@ -187,11 +187,11 @@ namespace Benutzerverwaltung
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input");
+                    Console.WriteLine("Invalid input.");
                 }
             }
             else
-                Console.Write("You have no permissions");
+                Console.Write("You have no permissions.");
         }
     }
 }
