@@ -1,0 +1,425 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Cosmos.System;
+
+namespace Comotest
+{
+    public class Kernel : Cosmos.System.Kernel
+    {
+        private static List<User> users = new List<User>();
+        private static User currentUser;
+        private static User rootUser;
+        private static List<List> lists = new List<List>();
+
+        protected override void BeforeRun()
+        {
+            System.Console.WriteLine("Cosmos booted successfully.");
+        }
+
+        private void LoginRootUser()
+        {
+            System.Console.WriteLine("Bitte Passwort für Root-Benutzer eingeben:");
+            string password = System.Console.ReadLine();
+            if (rootUser.Password == password)
+            {
+                currentUser = rootUser;
+                System.Console.WriteLine("Root-Benutzer erfolgreich eingeloggt.");
+            }
+            else
+            {
+                System.Console.WriteLine("Falsches Passwort.");
+                LoginRootUser();
+            }
+        }
+
+        protected override void Run()
+        {
+            while (true)
+            {
+                System.Console.WriteLine($"{currentUser.Username}, bitte geben Sie einen Befehl ein (list für Befehle):");
+                string command = System.Console.ReadLine();
+
+                if (command == "exit")
+                {
+                    Environment.Exit(0);
+                }
+                else if (command == "createuser")
+                {
+                    CreateUser();
+                }
+                else if (command == "deleteuser")
+                {
+                    ShowLists();
+                    DeleteUser();
+                }
+                else if (command == "userlist")
+                {
+                    ListUsers();
+                }
+                else if (command == "list")
+                {
+                    ShowCommands();
+                }
+                else if (command == "changerole")
+                {
+                    ChangeRole();
+                }
+                else if (command == "changepassword")
+                {
+                    ChangePassword();
+                }
+                else if (command == "changeuser")
+                {
+                    ChangeUser();
+                }
+                else if (command == "reboot")
+                {
+                    RebootSystem();
+                }
+                else if (command == "createlist")
+                {
+                    ShowLists();
+                    CreateList();
+                }
+                else if (command == "deletelist")
+                {
+                    ShowLists();
+                    DeleteList();
+                }
+                else if (command == "accesslist")
+                {
+                    ShowLists();
+                    AccessList();
+                }
+                else if (command == "movelist")
+                {
+                    ShowLists();
+                    MoveList();
+                }
+                else if (command == "editlist")
+                {
+                    ShowLists();
+                    EditList();
+                }
+                else if (command == "showlist")
+                {
+                    ShowLists();
+                }
+                else
+                {
+                    System.Console.WriteLine("Unbekannter Befehl. Bitte versuchen Sie es erneut.");
+                }
+            }
+        }
+
+        private void CreateUser()
+        {
+            System.Console.WriteLine("Nutzername:");
+            string username = System.Console.ReadLine();
+            if (users.Any(u => u.Username == username))
+            {
+                System.Console.WriteLine("Benutzername bereits vergeben. Bitte versuchen Sie es erneut.");
+                return;
+            }
+            System.Console.WriteLine("Passwort:");
+            string password = System.Console.ReadLine();
+            System.Console.WriteLine("Rolle (admin, fachanwender, anwender):");
+            string role = System.Console.ReadLine();
+            if (currentUser.Role == "sysadmin" || (currentUser.Role == "admin" && role != "sysadmin") || (currentUser.Role == "fachanwender" && role == "anwender"))
+            {
+                users.Add(new User(username, password, role));
+                System.Console.WriteLine("Benutzer " + username + " wurde als " + role + " erstellt.");
+            }
+            else
+            {
+                System.Console.WriteLine("Erstellung fehlgeschlagen. Unzureichende Rechte.");
+            }
+        }
+
+        private void DeleteUser()
+        {
+            System.Console.WriteLine("Nutzername:");
+            string username = System.Console.ReadLine();
+            User userToRemove = users.FirstOrDefault(u => u.Username == username);
+            if (userToRemove != null && (currentUser.Role == "sysadmin" || currentUser.Role == "admin" && userToRemove.Role != "sysadmin"))
+            {
+                users.Remove(userToRemove);
+                System.Console.WriteLine("Benutzer " + username + " wurde gelöscht.");
+            }
+            else
+            {
+                System.Console.WriteLine("Löschen fehlgeschlagen. Unzureichende Rechte oder Benutzer nicht gefunden.");
+            }
+        }
+
+        private void ListUsers()
+        {
+            System.Console.WriteLine("Liste der Benutzer:");
+            foreach (var user in users)
+            {
+                System.Console.WriteLine(user.Username + " (" + user.Role + ")");
+            }
+        }
+
+        private void ShowCommands()
+        {
+            System.Console.WriteLine("Befehle: ");
+            System.Console.WriteLine("createuser");
+            System.Console.WriteLine("deleteuser");
+            System.Console.WriteLine("changerole");
+            System.Console.WriteLine("changepassword");
+            System.Console.WriteLine("changeuser");
+            System.Console.WriteLine("userlist");
+            System.Console.WriteLine("createlist");
+            System.Console.WriteLine("deletelist");
+            System.Console.WriteLine("accesslist");
+            System.Console.WriteLine("movelist");
+            System.Console.WriteLine("editlist");
+            System.Console.WriteLine("showlist");
+            System.Console.WriteLine("reboot");
+            System.Console.WriteLine("exit");
+            System.Console.WriteLine("list");
+        }
+
+        private void ChangeRole()
+        {
+            System.Console.WriteLine("Nutzername:");
+            string username = System.Console.ReadLine();
+            System.Console.WriteLine("Neue Rolle (admin, fachanwender, anwender):");
+            string newRole = System.Console.ReadLine();
+            User userToChange = users.FirstOrDefault(u => u.Username == username);
+            if (userToChange != null && (currentUser.Role == "sysadmin" || currentUser.Role == "admin" && newRole != "sysadmin" || currentUser.Role == "fachanwender" && newRole == "anwender"))
+            {
+                userToChange.Role = newRole;
+                System.Console.WriteLine("Rolle von " + username + " wurde zu " + newRole + " geändert.");
+            }
+            else
+            {
+                System.Console.WriteLine("Ändern der Rolle fehlgeschlagen. Unzureichende Rechte oder Benutzer nicht gefunden.");
+            }
+        }
+        private void ChangePassword()
+        {
+            System.Console.WriteLine("Nutzername:");
+            string username = System.Console.ReadLine();
+            System.Console.WriteLine("Altes Passwort:");
+            string oldPassword = System.Console.ReadLine();
+            System.Console.WriteLine("Neues Passwort:");
+            string newPassword = System.Console.ReadLine();
+            User userToChange = users.FirstOrDefault(u => u.Username == username);
+            if (userToChange != null && userToChange.Password == oldPassword)
+            {
+                userToChange.Password = newPassword;
+                System.Console.WriteLine("Passwort von " + username + " wurde geändert.");
+            }
+            else
+            {
+                System.Console.WriteLine("Passwortänderung fehlgeschlagen. Unzureichende Rechte oder Benutzer nicht gefunden.");
+            }
+        }
+
+        private void ChangeUser()
+        {
+            System.Console.WriteLine("Nutzername:");
+            string username = System.Console.ReadLine();
+            System.Console.WriteLine("Passwort:");
+            string password = System.Console.ReadLine();
+            User userToSwitch = users.FirstOrDefault(u => u.Username == username);
+            if (userToSwitch != null && userToSwitch.Password == password)
+            {
+                currentUser = userToSwitch;
+                System.Console.WriteLine("Nutzer erfolgreich gewechselt zu " + username);
+            }
+            else
+            {
+                System.Console.WriteLine("Wechseln des Nutzers fehlgeschlagen. Falsches Passwort oder Benutzer nicht gefunden.");
+            }
+        }
+
+        private void RebootSystem()
+        {
+            users.Clear();
+            lists.Clear();
+            System.Console.WriteLine("System wird neu gestartet...");
+        }
+
+        private void CreateList()
+        {
+            if (currentUser.Role != "admin" && currentUser.Role != "sysadmin")
+            {
+                System.Console.WriteLine("Liste kann nur von einem Admin oder SysAdmin erstellt werden.");
+                return;
+            }
+
+            System.Console.WriteLine("Listenname:");
+            string listName = System.Console.ReadLine();
+            System.Console.WriteLine("Wer darf die Liste öffnen (admin, fachanwender, anwender)?");
+            string openRole = System.Console.ReadLine();
+            if (!IsValidRole(openRole))
+            {
+                System.Console.WriteLine("Ungültige Rolle. Nur admin, fachanwender oder anwender sind erlaubt.");
+                return;
+            }
+            System.Console.WriteLine("Wer darf die Liste bearbeiten (admin, fachanwender, anwender)?");
+            string editRole = System.Console.ReadLine();
+            if (!IsValidRole(editRole))
+            {
+                System.Console.WriteLine("Ungültige Rolle. Nur admin, fachanwender oder anwender sind erlaubt.");
+                return;
+            }
+            System.Console.WriteLine("Wer darf die Liste verschieben (admin, fachanwender, anwender)?");
+            string moveRole = System.Console.ReadLine();
+            if (!IsValidRole(moveRole))
+            {
+                System.Console.WriteLine("Ungültige Rolle. Nur admin, fachanwender oder anwender sind erlaubt.");
+                return;
+            }
+            System.Console.WriteLine("Wer darf die Liste löschen (admin, fachanwender, anwender)?");
+            string deleteRole = System.Console.ReadLine();
+            if (!IsValidRole(deleteRole))
+            {
+                System.Console.WriteLine("Ungültige Rolle. Nur admin, fachanwender oder anwender sind erlaubt.");
+                return;
+            }
+
+            lists.Add(new List(listName, openRole, editRole, moveRole, deleteRole));
+            System.Console.WriteLine("Liste " + listName + " wurde erstellt.");
+        }
+
+        private void DeleteList()
+        {
+            System.Console.WriteLine("Listenname:");
+            string listName = System.Console.ReadLine();
+            var listToDelete = lists.FirstOrDefault(l => l.Name == listName);
+            if (listToDelete != null)
+            {
+                if (currentUser.Role == "sysadmin" || currentUser.Role == listToDelete.DeleteRole)
+                {
+                    lists.Remove(listToDelete);
+                    System.Console.WriteLine("Liste " + listName + " wurde gelöscht.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Löschen fehlgeschlagen. Unzureichende Rechte.");
+                }
+            }
+            else
+            {
+                System.Console.WriteLine("Liste nicht gefunden.");
+            }
+        }
+
+        private void AccessList()
+        {
+            System.Console.WriteLine("Listenname:");
+            string listName = System.Console.ReadLine();
+            var listToAccess = lists.FirstOrDefault(l => l.Name == listName);
+            if (listToAccess != null)
+            {
+                if (currentUser.Role == "sysadmin" || currentUser.Role == listToAccess.OpenRole)
+                {
+                    System.Console.WriteLine("Sie dürfen die Liste öffnen.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Zugriff verweigert.");
+                }
+            }
+            else
+            {
+                System.Console.WriteLine("Liste nicht gefunden.");
+            }
+        }
+
+        private void MoveList()
+        {
+            System.Console.WriteLine("Listenname:");
+            string listName = System.Console.ReadLine();
+            var listToMove = lists.FirstOrDefault(l => l.Name == listName);
+            if (listToMove != null)
+            {
+                if (currentUser.Role == "sysadmin" || currentUser.Role == listToMove.MoveRole)
+                {
+                    System.Console.WriteLine("Sie dürfen die Liste verschieben.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Verschieben verweigert.");
+                }
+            }
+            else
+            {
+                System.Console.WriteLine("Liste nicht gefunden.");
+            }
+        }
+
+        private void EditList()
+        {
+            System.Console.WriteLine("Listenname:");
+            string listName = System.Console.ReadLine();
+            var listToEdit = lists.FirstOrDefault(l => l.Name == listName);
+            if (listToEdit != null)
+            {
+                if (currentUser.Role == "sysadmin" || currentUser.Role == listToEdit.EditRole)
+                {
+                    System.Console.WriteLine("Sie dürfen die Liste bearbeiten.");
+                }
+                else
+                {
+                    System.Console.WriteLine("Bearbeiten verweigert.");
+                }
+            }
+            else
+            {
+                System.Console.WriteLine("Liste nicht gefunden.");
+            }
+        }
+
+        private void ShowLists()
+        {
+            System.Console.WriteLine("Verfügbare Listen:");
+            foreach (var list in lists)
+            {
+                System.Console.WriteLine($"{list.Name} (Open: {list.OpenRole}, Edit: {list.EditRole}, Move: {list.MoveRole}, Delete: {list.DeleteRole})");
+            }
+        }
+
+        private bool IsValidRole(string role)
+        {
+            return role == "admin" || role == "fachanwender" || role == "anwender";
+        }
+    }
+
+    public class User
+    {
+        public string Username { get; }
+        public string Password { get; set; }
+        public string Role { get; set; }
+
+        public User(string username, string password, string role)
+        {
+            Username = username;
+            Password = password;
+            Role = role;
+        }
+    }
+
+    public class List
+    {
+        public string Name { get; }
+        public string OpenRole { get; }
+        public string EditRole { get; }
+        public string MoveRole { get; }
+        public string DeleteRole { get; }
+
+        public List(string name, string openRole, string editRole, string moveRole, string deleteRole)
+        {
+            Name = name;
+            OpenRole = openRole;
+            EditRole = editRole;
+            MoveRole = moveRole;
+            DeleteRole = deleteRole;
+        }
+    }
+}
