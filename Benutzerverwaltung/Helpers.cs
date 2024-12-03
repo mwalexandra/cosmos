@@ -9,6 +9,29 @@ namespace Benutzerverwaltung
 {
     internal class Helpers
     {
+
+        public void showHelp()
+        {
+            Console.WriteLine("* User management:");
+            Console.WriteLine("'userlist' to display all users.");
+            Console.WriteLine("'create' to create a user and password.");
+            Console.WriteLine("'delete' to delete a user.");
+            Console.WriteLine("'rename' to rename a user.");
+            Console.WriteLine("'repass' to change a password.");
+            Console.WriteLine("'rerole' to change a role of any user.");
+            Console.WriteLine("* Lists management:");
+            Console.WriteLine("'createlist' to create new list of users.");
+            Console.WriteLine("'deletelist' to stop the program.");
+            Console.WriteLine("'accesslist' to reboot the system.");
+            Console.WriteLine("'movelist' to stop the program.");
+            Console.WriteLine("'editlist' to reboot the system.");
+            Console.WriteLine("'showlist' to reboot the system.");
+            Console.WriteLine("'changeuser' to change user.");
+            Console.WriteLine("* System mamagement:");
+            Console.WriteLine("'exit' to stop the program.");
+            Console.WriteLine("'reboot' to reboot the system.");
+        }
+
         public bool IsValidInput(string input)
         {
             if ((input.Length < 4) || (input.Length > 16))
@@ -42,18 +65,12 @@ namespace Benutzerverwaltung
             Console.WriteLine("Enter the user to be deleted and confirm the input.");
         }
 
-        public bool isAllowed (User userToChange, List<User> users, string action)
+        public bool isAllowed (User currentUser, User userToChange, List<User> users, string action)
         {
-            Console.Write("Input your password to check your permissions: ");
-            string password = Console.ReadLine();
-            User user = users.Find(userItem => userItem.GetPassword().Equals(password, StringComparison.OrdinalIgnoreCase));
-
-            if (user != null)
+            if (currentUser != null)
             {
-                int userRole = user.GetRole();
-                Console.Write(userRole);
+                int userRole = currentUser.GetRole();
                 int userToChangeRole = userToChange.GetRole();
-                Console.Write(userToChangeRole);
                 {
                     switch (action)
                     {
@@ -75,14 +92,14 @@ namespace Benutzerverwaltung
             return false;
         }
 
-        static bool CheckRights(int userRole, int userToChangeRole)
+        static bool CheckRights(int currentUserRole, int userToChangeRole)
         {
-            if (userRole == 3) return false;
-            else if (userRole == 2)
+            if (currentUserRole == 3) return false;
+            else if (currentUserRole == 2)
             {
                 return userToChangeRole == 3 ? true : false;
             }
-            else if (userRole == 1)
+            else if (currentUserRole == 1)
             {
                 switch (userToChangeRole)
                 {
@@ -93,7 +110,7 @@ namespace Benutzerverwaltung
                         return false;
                 }
             }
-            else if (userRole == 0)
+            else if (currentUserRole == 0)
             {
                 switch (userToChangeRole)
                 {
@@ -104,6 +121,12 @@ namespace Benutzerverwaltung
                 }
             }
             return false;
+        }
+
+        private bool IsValidRole(string role)
+        {
+            int roleInt = int.Parse(role);
+            return role == 1 || role == 2 || role == 3;
         }
 
     }

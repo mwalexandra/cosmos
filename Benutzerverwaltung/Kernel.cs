@@ -10,17 +10,34 @@ namespace Benutzerverwaltung
     public class Kernel : Sys.Kernel
     {
         // List for storing users
-        private static List<User> users = new List<User>();
-        Utils utils = new Utils();
-        Helpers helpers = new Helpers();
+        private static List users = new UserList();
+        private static User currentUser;
+        private static User rootUser("root", "root", "Root");
+        private static List<List> lists = new List<List>();
+
+        private static Utils utils = new Utils();
+        private static ListUtils listUtils = new ListUtils();
+        private static Helpers helpers = new Helpers();
 
         protected override void BeforeRun()
         {
-            // TODO Memory
-            users.Add(new User("root", "root", 0));
-
             Console.WriteLine("Cosmos OS booted successfully.");
-            Console.WriteLine("Type 'help' for getting help\nor 'exit' to stop the OS");
+        }
+
+        private void LoginRootUser()
+        {
+            System.Console.WriteLine("Please enter the password for the root user:");
+            string password = System.Console.ReadLine();
+            if (rootUser.Password == password)
+            {
+                currentUser = rootUser;
+                System.Console.WriteLine("Root user successfully logged in.");
+            }
+            else
+            {
+                System.Console.WriteLine("Incorrect password.");
+                LoginRootUser();
+            }
         }
 
         protected override void Run()
@@ -28,28 +45,17 @@ namespace Benutzerverwaltung
             // Waiting for user input
             while (true)
             {
+                System.Console.WriteLine($"{currentUser.Username}, Please enter a command.\n'help' for getting help\nor 'exit' to stop the OS");
                 string command = Console.ReadLine();
 
-                // Befehl auswerten
                 if (command.Equals("help", StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine("'userlist' to display all users.");
-                    Console.WriteLine("'create' to create a user and password.");
-                    Console.WriteLine("'delete' to delete a user.");
-                    Console.WriteLine("'rename' to rename a user.");
-                    Console.WriteLine("'repass' to change a password.");
-                    Console.WriteLine("'rerole' to change a role of any user.");
-                    Console.WriteLine("'helpcreate' to get help.");
-                    Console.WriteLine("'helpdelete' to get help.");
-                    Console.WriteLine("'exit' to stop the program.");
+                    helpers.showHelp();
                 }
+                // user management
                 else if (command.Equals("create", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.CreateUsernameAndPassword(users);
-                }
-                else if (command.Equals("userlist", StringComparison.OrdinalIgnoreCase))
-                {
-                    utils.DisplayUserList(users);
+                    utils.CreateUsernameAndPassword(currentUser, users);
                 }
                 else if (command.Equals("delete", StringComparison.OrdinalIgnoreCase))
                 {
@@ -62,22 +68,56 @@ namespace Benutzerverwaltung
                 else if (command.Equals("repass", StringComparison.OrdinalIgnoreCase))
                 {
                     utils.ChangePassword(users);
-                }
+                } 
                 else if (command.Equals("rerole", StringComparison.OrdinalIgnoreCase))
                 {
                     utils.ChangeRole(users);
                 }
-                else if (command.Equals("helpcreate", StringComparison.OrdinalIgnoreCase))
+                else if (command.Equals("changeuser", StringComparison.OrdinalIgnoreCase))
                 {
-                    helpers.HelpCreateUser();
+                    utils.ChangeUser(users);
                 }
-                else if (command.Equals("helpdelete", StringComparison.OrdinalIgnoreCase))
+                // lists management
+                else if (command.Equals("userlist", StringComparison.OrdinalIgnoreCase))
                 {
-                    helpers.HelpDeleteUser();
+                    utils.DisplayUserList(users);
+                }
+                else if (command.Equals("createlist", StringComparison.OrdinalIgnoreCase))
+                {
+                    listUtils.ShowLists();
+                    listUtils.CreateList(currentUser);
+                }
+                else if (command.Equals("deletelist", StringComparison.OrdinalIgnoreCase))
+                {
+                    listUtils.ShowLists();
+                    listUtils.DeleteList();
+                }
+                else if (command.Equals("accesslist", StringComparison.OrdinalIgnoreCase))
+                {
+                    listUtils.ShowLists();
+                    listUtils.AccessList();
+                }
+                else if (command.Equals("movelist", StringComparison.OrdinalIgnoreCase))
+                {
+                    listUtils.ShowLists();
+                    listUtils.MoveList();
+                }
+                else if (command.Equals("editlist", StringComparison.OrdinalIgnoreCase))
+                {
+                    listUtils.ShowLists();
+                    listUtils.EditList();
+                }
+                else if (command.Equals("showlists", StringComparison.OrdinalIgnoreCase))
+                {
+                    listUtils.ShowLists();
                 }
                 else if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
                     Exit();
+                }
+                else if (command == "reboot")
+                {
+                    RebootSystem();
                 }
                 else
                 {
@@ -88,6 +128,13 @@ namespace Benutzerverwaltung
         static void Exit()
         {
             Environment.Exit(0);
+        }
+
+        private void RebootSystem()
+        {
+            users.Clear();
+            lists.Clear();
+            System.Console.WriteLine("System wird neu gestartet...");
         }
     }
 }

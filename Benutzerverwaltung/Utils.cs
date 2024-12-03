@@ -10,7 +10,7 @@ namespace Benutzerverwaltung
     {
         static Helpers helpers = new Helpers();
 
-        public void CreateUsernameAndPassword(List<User> users)
+        public void CreateUsernameAndPassword(User currentUser, List<User> users)
         {
             Console.WriteLine("Username and password creation:");
 
@@ -22,6 +22,11 @@ namespace Benutzerverwaltung
                 if (!helpers.IsValidInput(username))
                 {
                     Console.WriteLine("Invalid username. Please try again.");
+                }
+                if (users.Any(u => u.Username == username))
+                {
+                    System.Console.WriteLine("Username already taken. Please try again.");
+                    return;
                 }
             }
 
@@ -36,10 +41,9 @@ namespace Benutzerverwaltung
                 }
             }
 
-
             // Benutzer zur Liste hinzufügen
             User newUser = new User(username, password, 3); // default role - User
-            if (helpers.isAllowed(newUser, users, "create"))
+            if (helpers.isAllowed(currentUser, newUser, users, "create"))
             {
                 users.Add(newUser);
                 Console.WriteLine("Username and password were created successfully");
@@ -53,24 +57,7 @@ namespace Benutzerverwaltung
             }
         }
 
-        public void DisplayUserList(List<User> users)
-        {
-            Console.WriteLine("User list:");
-
-            if (users.Count == 0)
-            {
-                Console.WriteLine("User list is empty");
-            }
-            else
-            {
-                foreach (var User in users)
-                {
-                    Console.WriteLine($"User: {User.GetUsername()}, role: {User.RoleToString(User.GetRole())}");
-                }
-            }
-        }
-
-        public void DeleteUser(List<User> users)
+        public void DeleteUser(User currentUser, List<User> users)
         {
             Console.Write("Enter the username you want to delete: ");
             string usernameToDelete = Console.ReadLine();
@@ -82,7 +69,7 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            if (helpers.isAllowed(userToDelete, users, "delete"))
+            if (helpers.isAllowed(currentUser, userToDelete, users, "delete"))
             {
                 Console.WriteLine($"Are you sure you want to delete the user '{usernameToDelete}'? (y/n): ");
                 string confirmation = Console.ReadLine();
@@ -101,7 +88,7 @@ namespace Benutzerverwaltung
                 Console.WriteLine("You have no permissions.");
         }
 
-        public void RenameUser(List<User> users)
+        public void RenameUser(User currentUser, List<User> users)
         {
             Console.Write("Enter the username you want to modify: ");
             string currentUsername = Console.ReadLine();
@@ -112,7 +99,7 @@ namespace Benutzerverwaltung
                 Console.WriteLine("User was not found.");
                 return;
             }
-            if (helpers.isAllowed(userToRename, users, "reuser"))
+            if (helpers.isAllowed(currentUser, userToRename, users, "reuser"))
             {
                 Console.Write("Enter the new username (at least 4 characters, only Latin letters): ");
                 string newUsername = Console.ReadLine();
@@ -129,8 +116,9 @@ namespace Benutzerverwaltung
             else
                 Console.Write("You have no permissions");
         }
-
-        public void ChangePassword(List<User> users)
+// change a pass of other users
+//TODO change a pass of user self (Lars ChangePass() passt gut)
+        public void ChangePassword(User currentUser, List<User> users)
         {
             Console.Write("Enter the username whose password you want to change: ");
             string username = Console.ReadLine();
@@ -142,12 +130,12 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            if (helpers.isAllowed(userToChangePassword, users, "repass"))
+            if (helpers.isAllowed(currentUser, userToChangePassword, users, "repass"))
             {
                 Console.Write("Enter the new password (at least 4 characters, only Latin letters): ");
                 string newPassword = Console.ReadLine();
 
-                if (!helpers.IsValidInput(newPassword))
+                if (!helpers.IsValidInput(newPassword) || userToChange.Password == oldPassword)
                 {
                     Console.WriteLine("Invalid new password.");
                     return;
@@ -160,7 +148,7 @@ namespace Benutzerverwaltung
                 Console.Write("You have no permissions");
         }
 
-        public void ChangeRole(List<User> users)
+        public void ChangeRole(User currentUser, List<User> users)
         {
             Console.WriteLine("Enter the username whose role you want to change: ");
             string username = Console.ReadLine();
@@ -172,7 +160,7 @@ namespace Benutzerverwaltung
                 return;
             }
 
-            if (helpers.isAllowed(userToChangeRole, users, "rerole"))
+            if (helpers.isAllowed(currentUser, userToChangeRole, users, "rerole"))
             {
                 Console.Write("Enter the number of the new role (Fachadmin - 1, Fachuser - 2, User - 3): ");
                 string role = Console.ReadLine();
@@ -193,5 +181,41 @@ namespace Benutzerverwaltung
             else
                 Console.Write("You have no permissions.");
         }
+
+        private void ChangeUser(List<User> users)
+        {
+            System.Console.WriteLine("User name:");
+            string username = System.Console.ReadLine();
+            System.Console.WriteLine("Password:");
+            string password = System.Console.ReadLine();
+            User userToSwitch = users.FirstOrDefault(u => u.Username == username);
+            if (userToSwitch != null && userToSwitch.Password == password)
+            {
+                currentUser = userToSwitch;
+                System.Console.WriteLine("User successfully switched to " + username);
+            }
+            else
+            {
+                System.Console.WriteLine("Failed to switch user. Incorrect password or user not found.");
+            }
+        }
+
+// TODO создать для лист и юзер менеджмента отдельные утилит-классы
+        public void DisplayUserList(List<User> users)
+        {
+            Console.WriteLine("User list:");
+
+            if (users.Count == 0)
+            {
+                Console.WriteLine("User list is empty");
+            }
+            else
+            {
+                foreach (var User in users)
+                {
+                    Console.WriteLine($"User: {User.GetUsername()}, role: {User.RoleToString(User.GetRole())}");
+                }
+            }
+        }        
     }
 }
