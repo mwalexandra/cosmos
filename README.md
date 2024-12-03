@@ -1,3 +1,20 @@
+In the project, a hierarchy of operating system users is implemented. The users are divided into four levels with different access rights:
+
+## 1. Root (root User)
+- Has unrestricted access to the system.
+- Created during the initial system setup.
+- Cannot be deleted.
+
+## 2. Admin (Special Administrator)
+- Manages the rights of users in lower classes.
+- Has limited privileges compared to root.
+
+## 3. Manager User (Special User)
+- Can change the rights of lower class users.
+
+## 4. User
+- Has no permission to modify users or their roles.
+
 # Use of the Project
 
 The project provides a set of commands for user and list management, as well as system administration. Below are the main commands that can be used in various administrative areas:
