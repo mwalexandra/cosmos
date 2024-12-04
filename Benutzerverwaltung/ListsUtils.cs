@@ -10,9 +10,9 @@ namespace Benutzerverwaltung
     {
         Helpers helpers = new Helpers();
 
-            private void CreateList(User currentUser)
+            public void CreateList(User currentUser, List<List> lists)
             {
-                if (currentUser.Role != 0 && currentUser.Role != 1)
+                if (currentUser.GetRole() != 0 && currentUser.GetRole() != 1)
                 {
                     System.Console.WriteLine("The list can only be created by Root user or an Admin.");
                     return;
@@ -21,29 +21,29 @@ namespace Benutzerverwaltung
                 System.Console.WriteLine("List name:");
                 string listName = System.Console.ReadLine();
                 System.Console.WriteLine("Who can open the list (1 - Admin, 2 - Manager user, 3 - User)? Input the number");
-                string openRole = System.Console.ReadLine();
-                if (!IsValidRole(openRole))
+                int openRole = int.Parse(System.Console.ReadLine());
+                if (!helpers.IsValidRole(openRole))
                 {
                     System.Console.WriteLine("Invalid role number. Only 1 for Admin, 2 for Manager user or 3 for User are allowed.");
                     return;
                 }
                 System.Console.WriteLine("Who can edit the list (1 - Admin, 2 - Manager user, 3 - User)?");
-                string editRole = System.Console.ReadLine();
-                if (!IsValidRole(editRole))
+                int editRole = int.Parse(System.Console.ReadLine());
+                if (!helpers.IsValidRole(editRole))
                 {
                     System.Console.WriteLine("Invalid role number. Only 1 for Admin, 2 for Manager user or 3 for User are allowed.");
                     return;
                 }
                 System.Console.WriteLine("Who can move the list (1 - Admin, 2 - Manager user, 3 - User)?");
-                string moveRole = System.Console.ReadLine();
-                if (!IsValidRole(moveRole))
+                int moveRole = int.Parse(System.Console.ReadLine());
+                if (!helpers.IsValidRole(moveRole))
                 {
                     System.Console.WriteLine("Invalid role. Only 1 for Admin, 2 for Manager user or 3 for User are allowed.");
                     return;
                 }
                 System.Console.WriteLine("Who can delete the list (1 - Admin, 2 - Manager user, 3 - User)?");
-                string deleteRole = System.Console.ReadLine();
-                if (!IsValidRole(deleteRole))
+                int deleteRole = int.Parse(System.Console.ReadLine());
+                if (!helpers.IsValidRole(deleteRole))
                 {
                     System.Console.WriteLine("Invalid role. Only 1 for Admin, 2 for Manager user or 3 for User are allowed.");
                     return;
@@ -53,14 +53,14 @@ namespace Benutzerverwaltung
                 System.Console.WriteLine("List " + listName + " has been created.");
             }
 
-            private void DeleteList(User currentUser)
+            public void DeleteList(User currentUser, List<List> lists)
             {
                 System.Console.WriteLine("Name of the list:");
                 string listName = System.Console.ReadLine();
                 var listToDelete = lists.FirstOrDefault(l => l.Name == listName);
                 if (listToDelete != null)
                 {
-                    if (currentUser.Role == 0 || currentUser.Role == listToDelete.DeleteRole)
+                    if (currentUser.GetRole() == 0 || currentUser.GetRole() == listToDelete.DeleteRole)
                     {
                         lists.Remove(listToDelete);
                         System.Console.WriteLine("List " + listName + " was removed.");
@@ -76,14 +76,14 @@ namespace Benutzerverwaltung
                 }
             }
 
-            private void AccessList(User currentUser)
+            public void AccessList(User currentUser, List<List> lists)
             {
                 System.Console.WriteLine("Name of the list:");
                 string listName = System.Console.ReadLine();
                 var listToAccess = lists.FirstOrDefault(l => l.Name == listName);
                 if (listToAccess != null)
                 {
-                    if (currentUser.Role == 0 || currentUser.Role == listToAccess.OpenRole)
+                    if (currentUser.GetRole() == 0 || currentUser.GetRole() == listToAccess.OpenRole)
                     {
                         System.Console.WriteLine("You are allowed to open the list.");
                     }
@@ -98,14 +98,14 @@ namespace Benutzerverwaltung
                 }
             }
 
-            private void MoveList(User currentUser)
+            public void MoveList(User currentUser, List<List> lists)
             {
                 System.Console.WriteLine("Name of the list:");
                 string listName = System.Console.ReadLine();
                 var listToMove = lists.FirstOrDefault(l => l.Name == listName);
                 if (listToMove != null)
                 {
-                    if (currentUser.Role == 0 || currentUser.Role == listToMove.MoveRole)
+                    if (currentUser.GetRole() == 0 || currentUser.GetRole() == listToMove.MoveRole)
                     {
                         System.Console.WriteLine("You are allowed to move the list.");
                     }
@@ -120,14 +120,14 @@ namespace Benutzerverwaltung
                 }
             }
 
-            private void EditList(User currentUser)
+            public void EditList(User currentUser, List<List> lists)
             {
                 System.Console.WriteLine("Name of the list:");
                 string listName = System.Console.ReadLine();
                 var listToEdit = lists.FirstOrDefault(l => l.Name == listName);
                 if (listToEdit != null)
                 {
-                    if (currentUser.Role == 0 || currentUser.Role == listToEdit.EditRole)
+                    if (currentUser.GetRole() == 0 || currentUser.GetRole() == listToEdit.EditRole)
                     {
                         System.Console.WriteLine("You are allowed to edit the list.");
                     }
@@ -142,7 +142,7 @@ namespace Benutzerverwaltung
                 }
             }
 
-            private void ShowLists()
+            public void ShowLists(List<List> lists)
             {
                 System.Console.WriteLine("Lists:");
                 foreach (var list in lists)

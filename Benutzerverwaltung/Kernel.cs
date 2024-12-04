@@ -9,14 +9,15 @@ namespace Benutzerverwaltung
 {
     public class Kernel : Sys.Kernel
     {
-        // List for storing users
-        private static List users = new UserList();
+        // 
         private static User currentUser;
-        private static User rootUser("root", "root", "Root");
+        private static User rootUser = new User("root", "root", 0);
+        //
+        private static UserList users = new UserList();
         private static List<List> lists = new List<List>();
-
+        // 
         private static Utils utils = new Utils();
-        private static ListUtils listUtils = new ListUtils();
+        private static ListsUtils listUtils = new ListsUtils();
         private static Helpers helpers = new Helpers();
 
         protected override void BeforeRun()
@@ -28,7 +29,7 @@ namespace Benutzerverwaltung
         {
             System.Console.WriteLine("Please enter the password for the root user:");
             string password = System.Console.ReadLine();
-            if (rootUser.Password == password)
+            if (rootUser.GetPassword() == password)
             {
                 currentUser = rootUser;
                 System.Console.WriteLine("Root user successfully logged in.");
@@ -45,7 +46,7 @@ namespace Benutzerverwaltung
             // Waiting for user input
             while (true)
             {
-                System.Console.WriteLine($"{currentUser.Username}, Please enter a command.\n'help' for getting help\nor 'exit' to stop the OS");
+                System.Console.WriteLine($"{currentUser.GetUsername()}, Please enter a command.\n'help' for getting help\nor 'exit' to stop the OS");
                 string command = Console.ReadLine();
 
                 if (command.Equals("help", StringComparison.OrdinalIgnoreCase))
@@ -59,57 +60,62 @@ namespace Benutzerverwaltung
                 }
                 else if (command.Equals("delete", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.DeleteUser(users);
+                    utils.DeleteUser(currentUser, users);
                 }
                 else if (command.Equals("rename", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.RenameUser(users);
+                    utils.RenameUser(currentUser, users);
                 }
                 else if (command.Equals("repass", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.ChangePassword(users);
+                    utils.ChangePassword(currentUser, users);
                 } 
                 else if (command.Equals("rerole", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.ChangeRole(users);
+                    utils.ChangeRole(currentUser, users);
                 }
                 else if (command.Equals("changeuser", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.ChangeUser(users);
+                    User userToChange = utils.ChangeUser(users);
+                    if (userToChange != null)
+                    {
+                        currentUser = userToChange;
+                        System.Console.WriteLine("User successfully switched to " + userToChange.GetUsername());
+                    }
                 }
-                // lists management
-                else if (command.Equals("userlist", StringComparison.OrdinalIgnoreCase))
+                    // lists management
+                    else if (command.Equals("userlist", StringComparison.OrdinalIgnoreCase))
                 {
                     utils.DisplayUserList(users);
                 }
                 else if (command.Equals("createlist", StringComparison.OrdinalIgnoreCase))
                 {
-                    listUtils.ShowLists();
-                    listUtils.CreateList(currentUser);
+                    listUtils.ShowLists(lists);
+                    listUtils.CreateList(currentUser, lists);
                 }
                 else if (command.Equals("deletelist", StringComparison.OrdinalIgnoreCase))
                 {
-                    listUtils.ShowLists();
-                    listUtils.DeleteList();
+                    listUtils.ShowLists(lists);
+                    listUtils.DeleteList(currentUser, lists);
                 }
                 else if (command.Equals("accesslist", StringComparison.OrdinalIgnoreCase))
                 {
-                    listUtils.ShowLists();
-                    listUtils.AccessList();
+                    listUtils.ShowLists(lists);
+                    listUtils.AccessList(currentUser, lists);
                 }
                 else if (command.Equals("movelist", StringComparison.OrdinalIgnoreCase))
                 {
-                    listUtils.ShowLists();
-                    listUtils.MoveList();
+                    listUtils.ShowLists(lists);
+                    listUtils.MoveList(currentUser, lists);
                 }
                 else if (command.Equals("editlist", StringComparison.OrdinalIgnoreCase))
                 {
-                    listUtils.ShowLists();
-                    listUtils.EditList();
+                    listUtils.ShowLists(lists);
+                    listUtils.EditList(currentUser, lists);
                 }
                 else if (command.Equals("showlists", StringComparison.OrdinalIgnoreCase))
                 {
-                    listUtils.ShowLists();
+                    listUtils.ShowLists(lists);
                 }
                 else if (command.Equals("exit", StringComparison.OrdinalIgnoreCase))
                 {
@@ -132,7 +138,7 @@ namespace Benutzerverwaltung
 
         private void RebootSystem()
         {
-            users.Clear();
+            users.GetUsers().Clear();
             lists.Clear();
             System.Console.WriteLine("System wird neu gestartet...");
         }

@@ -65,7 +65,7 @@ namespace Benutzerverwaltung
             Console.WriteLine("Enter the user to be deleted and confirm the input.");
         }
 
-        public bool isAllowed (User currentUser, User userToChange, List<User> users, string action)
+        public bool isAllowed (User currentUser, User userToChange, UserList users, string action)
         {
             if (currentUser != null)
             {
@@ -123,9 +123,8 @@ namespace Benutzerverwaltung
             return false;
         }
 
-        private bool IsValidRole(string role)
+        public bool IsValidRole(int role)
         {
-            int roleInt = int.Parse(role);
             return role == 1 || role == 2 || role == 3;
         }
 

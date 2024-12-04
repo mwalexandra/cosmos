@@ -9,12 +9,12 @@ namespace Benutzerverwaltung
     internal class List
     {
         public string Name { get; }
-        public string OpenRole { get; }
-        public string EditRole { get; }
-        public string MoveRole { get; }
-        public string DeleteRole { get; }
+        public int OpenRole { get; }
+        public int EditRole { get; }
+        public int MoveRole { get; }
+        public int DeleteRole { get; }
 
-        public List(string name, string openRole, string editRole, string moveRole, string deleteRole)
+        public List(string name, int openRole, int editRole, int moveRole, int deleteRole)
         {
             Name = name;
             OpenRole = openRole;
