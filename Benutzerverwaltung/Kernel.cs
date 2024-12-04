@@ -10,7 +10,7 @@ namespace Benutzerverwaltung
     public class Kernel : Sys.Kernel
     {
         // 
-        private static User currentUser;
+        private static User currentUser = new User("initUser", "initUser", 3);
         private static User rootUser = new User("root", "root", 0);
         //
         private static UserList users = new UserList();
@@ -23,22 +23,7 @@ namespace Benutzerverwaltung
         protected override void BeforeRun()
         {
             Console.WriteLine("Cosmos OS booted successfully.");
-        }
-
-        private void LoginRootUser()
-        {
-            System.Console.WriteLine("Please enter the password for the root user:");
-            string password = System.Console.ReadLine();
-            if (rootUser.GetPassword() == password)
-            {
-                currentUser = rootUser;
-                System.Console.WriteLine("Root user successfully logged in.");
-            }
-            else
-            {
-                System.Console.WriteLine("Incorrect password.");
-                LoginRootUser();
-            }
+            LoginRootUser();
         }
 
         protected override void Run()
@@ -131,6 +116,21 @@ namespace Benutzerverwaltung
                 }
             }
         }
+        static void LoginRootUser()
+        {
+            System.Console.WriteLine("Please enter the password for the root user:");
+            string password = System.Console.ReadLine();
+            if (rootUser.GetPassword() == password)
+            {
+                currentUser = rootUser;
+                System.Console.WriteLine("Root user successfully logged in.");
+            }
+            else
+            {
+                System.Console.WriteLine("Incorrect password.");
+                LoginRootUser();
+            }
+        }
         static void Exit()
         {
             Environment.Exit(0);
@@ -138,9 +138,10 @@ namespace Benutzerverwaltung
 
         private void RebootSystem()
         {
-            users.GetUsers().Clear();
+            users.Clear();
             lists.Clear();
-            System.Console.WriteLine("System wird neu gestartet...");
+            System.Console.WriteLine("System will restart...");
+            LoginRootUser();
         }
     }
 }

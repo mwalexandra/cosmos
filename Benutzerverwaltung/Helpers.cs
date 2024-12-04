@@ -12,22 +12,22 @@ namespace Benutzerverwaltung
 
         public void showHelp()
         {
-            Console.WriteLine("* User management:");
+            Console.WriteLine("# User management:");
             Console.WriteLine("'userlist' to display all users.");
             Console.WriteLine("'create' to create a user and password.");
             Console.WriteLine("'delete' to delete a user.");
             Console.WriteLine("'rename' to rename a user.");
             Console.WriteLine("'repass' to change a password.");
             Console.WriteLine("'rerole' to change a role of any user.");
-            Console.WriteLine("* Lists management:");
+            Console.WriteLine("# Lists management:");
             Console.WriteLine("'createlist' to create new list of users.");
-            Console.WriteLine("'deletelist' to stop the program.");
-            Console.WriteLine("'accesslist' to reboot the system.");
-            Console.WriteLine("'movelist' to stop the program.");
-            Console.WriteLine("'editlist' to reboot the system.");
-            Console.WriteLine("'showlist' to reboot the system.");
-            Console.WriteLine("'changeuser' to change user.");
-            Console.WriteLine("* System mamagement:");
+            Console.WriteLine("'deletelist' to delete any list of users.");
+            Console.WriteLine("'accesslist' to get access information about a list of users.");
+            Console.WriteLine("'movelist' to move a list of users.");
+            Console.WriteLine("'editlist' to edit a list of users.");
+            Console.WriteLine("'showlist' to show a list of users.");
+            Console.WriteLine("'changeuser' to change an authorized user.");
+            Console.WriteLine("# System mamagement:");
             Console.WriteLine("'exit' to stop the program.");
             Console.WriteLine("'reboot' to reboot the system.");
         }

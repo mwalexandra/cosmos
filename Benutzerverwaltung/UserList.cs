@@ -35,6 +35,11 @@ namespace Benutzerverwaltung
             users.Remove(user);
         }
 
+        public void Clear()
+        {
+            users.Clear();
+        }
+
         public User FindUserByUsername(string username)
         {
             return users.FirstOrDefault(user => user.GetUsername() == username);
