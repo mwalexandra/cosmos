@@ -59,7 +59,7 @@ namespace Benutzerverwaltung
                 case 0:
                     return "Root user";
                 case 1:
-                    return "Manager admin";
+                    return "Admin";
                 case 2:
                     return "Manager user";
                 case 3:
