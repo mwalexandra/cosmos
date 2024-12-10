@@ -116,8 +116,7 @@ namespace Benutzerverwaltung
             else
                 Console.Write("You have no permissions");
         }
-// change a pass of other users
-//TODO change a pass of user self (Lars ChangePass() passt gut)
+
         public void ChangePassword(User currentUser, UserList users)
         {
             Console.Write("Enter the username whose password you want to change: ");
@@ -200,7 +199,6 @@ namespace Benutzerverwaltung
             }
         }
 
-// TODO создать для лист и юзер менеджмента отдельные утилит-классы
         public void DisplayUserList(UserList users)
         {
             Console.WriteLine("User list:");

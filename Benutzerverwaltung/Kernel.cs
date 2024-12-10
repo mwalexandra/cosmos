@@ -31,7 +31,11 @@ namespace Benutzerverwaltung
             // Waiting for user input
             while (true)
             {
-                System.Console.WriteLine($"{currentUser.GetUsername()}, Please enter a command.\n'help' for getting help\nor 'exit' to stop the OS");
+                System.Console.Writeline($"{currentUser.GetUsername()}, Please enter a command ")
+                helpers.WriteColored("'help' ", ConsoleColor.Yellow);
+                Console.WriteLine("for getting help or ");
+                helpers.WriteColored("'exit' ", ConsoleColor.Yellow);
+                Console.WriteLine("to stop the OS");
                 string command = Console.ReadLine();
 
                 if (command.Equals("help", StringComparison.OrdinalIgnoreCase))
@@ -112,7 +116,7 @@ namespace Benutzerverwaltung
                 }
                 else
                 {
-                    Console.WriteLine("Unknown command. Please try again.");
+                    helpers.WriteColored("Unknown command. Please try again.");
                 }
             }
         }

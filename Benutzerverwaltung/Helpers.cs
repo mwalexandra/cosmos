@@ -13,23 +13,40 @@ namespace Benutzerverwaltung
         public void showHelp()
         {
             Console.WriteLine("# User management:");
-            Console.WriteLine("'userlist' to display all users.");
-            Console.WriteLine("'create' to create a user and password.");
-            Console.WriteLine("'delete' to delete a user.");
-            Console.WriteLine("'rename' to rename a user.");
-            Console.WriteLine("'repass' to change a password.");
-            Console.WriteLine("'rerole' to change a role of any user.");
+            WriteColored("userlist", ConsoleColor.Yellow);
+            Console.WriteLine(" to display all users.");
+            WriteColored("create", ConsoleColor.Yellow);
+            Console.WriteLine(" to create a user and password.");
+            WriteColored("changeuser", ConsoleColor.Yellow);
+            Console.WriteLine(" to change an authorized user.");
+            WriteColored("delete", ConsoleColor.Yellow);
+            Console.WriteLine(" to delete a user.");
+            WriteColored("rename", ConsoleColor.Yellow);
+            Console.WriteLine(" to rename a user.");
+            WriteColored("repass", ConsoleColor.Yellow);
+            Console.WriteLine(" to change a password.");
+            WriteColored("rerole", ConsoleColor.Yellow);
+            Console.WriteLine(" to change a role of any user.");
+            
             Console.WriteLine("# Lists management:");
-            Console.WriteLine("'createlist' to create new list of users.");
-            Console.WriteLine("'deletelist' to delete any list of users.");
-            Console.WriteLine("'accesslist' to get access information about a list of users.");
-            Console.WriteLine("'movelist' to move a list of users.");
-            Console.WriteLine("'editlist' to edit a list of users.");
-            Console.WriteLine("'showlist' to show a list of users.");
-            Console.WriteLine("'changeuser' to change an authorized user.");
+            WriteColored("createlist", ConsoleColor.Yellow);
+            Console.WriteLine(" to create new list of users.");
+            WriteColored("deletelist", ConsoleColor.Yellow);
+            Console.WriteLine(" to delete any list of users.");
+            WriteColored("accesslist", ConsoleColor.Yellow);
+            Console.WriteLine(" to get access information about a list of users.");
+            WriteColored("movelist", ConsoleColor.Yellow);
+            Console.WriteLine(" to move a list of users.");
+            WriteColored("editlist", ConsoleColor.Yellow);
+            Console.WriteLine(" to edit a list of users.");
+            WriteColored("showlist", ConsoleColor.Yellow);
+            Console.WriteLine(" to show a list of users.");
+            
             Console.WriteLine("# System mamagement:");
-            Console.WriteLine("'exit' to stop the program.");
-            Console.WriteLine("'reboot' to reboot the system.");
+            WriteColored("exit", ConsoleColor.Yellow);
+            Console.WriteLine(" to stop the program.");
+            WriteColored("reboot", ConsoleColor.Yellow);
+            Console.WriteLine(" to reboot the system.");
         }
 
         public bool IsValidInput(string input)
@@ -126,6 +143,16 @@ namespace Benutzerverwaltung
         public bool IsValidRole(int role)
         {
             return role == 1 || role == 2 || role == 3;
+        }
+
+        public void WriteColored(string coloredText, ConsoleColor color)
+        {
+            // saving of the previous colour 
+            var previousColor = Console.ForegroundColor;
+
+            Console.ForegroundColor = color;
+            Console.Write(coloredText);
+            Console.ForegroundColor = previousColor;
         }
 
     }
