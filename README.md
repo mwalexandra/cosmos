@@ -29,11 +29,11 @@ The project provides a set of commands for user and list management, as well as 
 
 ## List Management:
 - **'createlist'** — creates a new user list.
-- **'deletelist'** — stops the program.
-- **'accesslist'** — restarts the system.
-- **'movelist'** — stops the program.
-- **'editlist'** — restarts the system.
-- **'showlist'** — restarts the system.
+- **'deletelist'** — deletes a user list.
+- **'accesslist'** — allows a user to access an existing list.
+- **'movelist'** — allows a user with the appropriate permissions to move a list.
+- **'editlist'** — allows a user with the appropriate permissions to edit a list.
+- **'showlist'** — displays all available lists in the system.
 - **'changeuser'** — switches the user.
 
 ## System Administration:
