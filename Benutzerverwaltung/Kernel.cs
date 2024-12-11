@@ -22,7 +22,7 @@ namespace Benutzerverwaltung
 
         protected override void BeforeRun()
         {
-            Console.WriteLine("Cosmos OS booted successfully.");
+            Console.WriteLine("NBV OS booted successfully.");
             LoginRootUser();
         }
 
@@ -31,11 +31,11 @@ namespace Benutzerverwaltung
             // Waiting for user input
             while (true)
             {
-                System.Console.WriteLine($"{currentUser.GetUsername()}, Please enter a command ");
                 helpers.WriteColored("help ", ConsoleColor.Yellow);
                 Console.WriteLine("for getting help or ");
                 helpers.WriteColored("exit ", ConsoleColor.Yellow);
                 Console.WriteLine("to stop the OS");
+                helpers.ShowPrompt(currentUser.GetUsername());
                 string command = Console.ReadLine();
 
                 if (command.Equals("help", StringComparison.OrdinalIgnoreCase))

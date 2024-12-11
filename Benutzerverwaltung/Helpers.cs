@@ -39,7 +39,7 @@ namespace Benutzerverwaltung
             Console.WriteLine(" to move a list of users.");
             WriteColored("editlist", ConsoleColor.Yellow);
             Console.WriteLine(" to edit a list of users.");
-            WriteColored("showlist", ConsoleColor.Yellow);
+            WriteColored("showlists", ConsoleColor.Yellow);
             Console.WriteLine(" to show a list of users.");
             
             Console.WriteLine("# System mamagement:");
@@ -155,5 +155,10 @@ namespace Benutzerverwaltung
             Console.ForegroundColor = previousColor;
         }
 
+        public void ShowPrompt(string currentUserName)
+        {
+            WriteColored($"{currentUserName}@NBVOS ?> ", ConsoleColor.Green);
+        }
+        
     }
 }
