@@ -16,8 +16,9 @@ namespace Benutzerverwaltung
         private static UserList users = new UserList();
         private static List<List> lists = new List<List>();
         // 
-        private static Utils utils = new Utils();
+        private static UserUtils userUtils = new UserUtils();
         private static ListsUtils listUtils = new ListsUtils();
+        private static SysUtils sysUtils = new SysUtils();
         private static Helpers helpers = new Helpers();
 
         protected override void BeforeRun()
@@ -45,27 +46,27 @@ namespace Benutzerverwaltung
                 // user management
                 else if (command.Equals("create", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.CreateUsernameAndPassword(currentUser, users);
+                    userUtils.CreateUsernameAndPassword(currentUser, users);
                 }
                 else if (command.Equals("delete", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.DeleteUser(currentUser, users);
+                    userUtils.DeleteUser(currentUser, users);
                 }
                 else if (command.Equals("rename", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.RenameUser(currentUser, users);
+                    userUtils.RenameUser(currentUser, users);
                 }
                 else if (command.Equals("repass", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.ChangePassword(currentUser, users);
+                    userUtils.ChangePassword(currentUser, users);
                 } 
                 else if (command.Equals("rerole", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.ChangeRole(currentUser, users);
+                    userUtils.ChangeRole(currentUser, users);
                 }
                 else if (command.Equals("changeuser", StringComparison.OrdinalIgnoreCase))
                 {
-                    User userToChange = utils.ChangeUser(users);
+                    User userToChange = userUtils.ChangeUser(users);
                     if (userToChange != null)
                     {
                         currentUser = userToChange;
@@ -75,7 +76,7 @@ namespace Benutzerverwaltung
                     // lists management
                     else if (command.Equals("userlist", StringComparison.OrdinalIgnoreCase))
                 {
-                    utils.DisplayUserList(users);
+                    userUtils.DisplayUserList(users);
                 }
                 else if (command.Equals("createlist", StringComparison.OrdinalIgnoreCase))
                 {
@@ -123,7 +124,7 @@ namespace Benutzerverwaltung
         static void LoginRootUser()
         {
             System.Console.WriteLine("Please enter the password for the root user:");
-            string password = System.Console.ReadLine();
+            string password = sysUtils.ReadPassword();
             if (rootUser.GetPassword() == password)
             {
                 currentUser = rootUser;

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Benutzerverwaltung
 {
-    internal class Utils
+    internal class UserUtils
     {
+        static SysUtils sysUtils = new SysUtils();
         static Helpers helpers = new Helpers();
 
         public void CreateUsernameAndPassword(User currentUser, UserList users)
@@ -34,7 +35,7 @@ namespace Benutzerverwaltung
             while (!helpers.IsValidInput(password))
             {
                 Console.Write("Please enter a password (at least 4 characters, Latin letters only): ");
-                password = Console.ReadLine();
+                password = sysUtils.ReadPassword();
                 if (!helpers.IsValidInput(password))
                 {
                     Console.WriteLine("Invalid password. Please try again.");
@@ -48,7 +49,6 @@ namespace Benutzerverwaltung
                 users.AddUser(newUser);
                 Console.WriteLine("Username and password were created successfully");
                 Console.WriteLine($"Username: {username}");
-                Console.WriteLine($"Password: {password}");
             }
             else
             {
@@ -132,7 +132,7 @@ namespace Benutzerverwaltung
             if (helpers.isAllowed(currentUser, userToChangePassword, users, "repass"))
             {
                 Console.Write("Enter the new password (at least 4 characters, only Latin letters): ");
-                string newPassword = Console.ReadLine();
+                string newPassword = sysUtils.ReadPassword();
 
                 if (!helpers.IsValidInput(newPassword) || userToChangePassword.GetPassword() == newPassword)
                 {
@@ -186,7 +186,7 @@ namespace Benutzerverwaltung
             System.Console.WriteLine("User name:");
             string username = System.Console.ReadLine();
             System.Console.WriteLine("Password:");
-            string password = System.Console.ReadLine();
+            string password = sysUtils.ReadPassword();
             User userToSwitch = users.FindUserByUsername(username);
             if (userToSwitch != null && userToSwitch.GetPassword() == password)
             {

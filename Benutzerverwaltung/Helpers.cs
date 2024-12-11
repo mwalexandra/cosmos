@@ -47,7 +47,7 @@ namespace Benutzerverwaltung
             Console.WriteLine(" to stop the program.");
             WriteColored("reboot", ConsoleColor.Yellow);
             Console.WriteLine(" to reboot the system.");
-        }
+        } 
 
         public bool IsValidInput(string input)
         {
